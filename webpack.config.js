@@ -2,6 +2,8 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const loader = require("sass-loader");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const WorkboxPlugin = require("workbox-webpack-plugin");
 
 module.exports = {
   entry: "./src/main.ts",
@@ -26,7 +28,7 @@ module.exports = {
       },
       {
         test: /\.html$/i,
-        loader: 'html-loader',
+        loader: "html-loader",
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
@@ -48,6 +50,16 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: "style.css",
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: "src/Assets/", to: "assets" },
+        { from: "src/manifest.json" },
+      ],
+    }),
+    new WorkboxPlugin.GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
     }),
   ],
   resolve: {
