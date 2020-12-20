@@ -1,5 +1,5 @@
 import { Position } from './Position';
-import { ObjectUtils } from '../utils/ObjectUtils';
+import { ObjectUtils } from '../Utils/ObjectUtils';
 
 export class ElementView {
     position: Position;

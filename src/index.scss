@@ -3,13 +3,14 @@ body {
     border: 0px;
     padding: 0px;
     height: 100vh;
+    touch-action: none;
 }
 
 #base {
     display: grid;
     grid-template-columns: 100%;
     grid-template-rows: 50px 1fr;
-    height: 100vh;
+    height: 100%
 }
 
 header {

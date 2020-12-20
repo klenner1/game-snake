@@ -42,11 +42,13 @@ export class Game extends View {
         }
         this.fruit.draw(this.context);
     }
+
     DrawInLoop() {
         if (this.canDrawInLoop) { this.Draw(); }
         setTimeout(() => { this.DrawInLoop() }, 100);
     }
     Resize() {
+        document.getElementsByTagName('body')[0].setAttribute('style', `max-height: ${window.innerHeight}px`);
         const gameContainer = document.querySelector('.game-container') as HTMLElement;
         const offsetHeight = gameContainer.offsetHeight
         const offsetWidth = gameContainer.offsetWidth
