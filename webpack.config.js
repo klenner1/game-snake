@@ -55,6 +55,7 @@ module.exports = {
       patterns: [
         { from: "src/Assets/", to: "assets" },
         { from: "src/manifest.json" },
+        { from: "src/favicon.ico" },
       ],
     }),
     new WorkboxPlugin.GenerateSW({
