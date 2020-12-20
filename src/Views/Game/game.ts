@@ -5,6 +5,7 @@ import { Position } from '../../Models/Position';
 import { Direction } from '../../Enums/Direction';
 export class Game extends View {
 
+    touchstartPosition = new Position(0, 0)
     blockSize = 50;
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
@@ -36,7 +37,7 @@ export class Game extends View {
         this.touch();
         if (this.snake.head.next(this.canvas)) {
             this.snake.head.drawHead(this.canvas, this.context);
-        }else{
+        } else {
             this.GameOver()
         }
         this.fruit.draw(this.context);
@@ -56,17 +57,46 @@ export class Game extends View {
     Events() {
         window.addEventListener('resize', (e) => { this.Resize(); });
         window.addEventListener('keydown', (e) => { this.keydown(e) });
+        window.addEventListener('touchstart', (e) => { this.touchstart(e) });
+        window.addEventListener('touchend', (e) => { this.touchend(e) });
+    }
+    touchstart(e: TouchEvent) {
+        const x = e.touches[0].clientX;
+        const y = e.touches[0].clientY;
+        this.touchstartPosition = new Position(x, y);
+    }
+    touchend(e: TouchEvent) {
+        const x = e.changedTouches[0].clientX;
+        const y = e.changedTouches[0].clientY;
+        const touchstart = this.touchstartPosition;
+        const touchend = new Position(x, y);
+        const xMovement = touchstart.x - touchend.x;
+        const yMovement = touchstart.y - touchend.y;
+        const moveInX = Math.abs(xMovement) > Math.abs(yMovement)
+        if (moveInX) {
+            if (xMovement < -1) {
+                this.ArrowRight()
+            } else if (xMovement > 1) {
+                this.ArrowLeft()
+            }
+        } else {
+            if (yMovement > 1) {
+                this.ArrowUp()
+            } else if (yMovement < -1) {
+                this.ArrowDown()
+            }
+        }
     }
     keydown(e: KeyboardEvent) {
         const func = (this as any)[e.key]
         if (func) {
             func();
-            this.canDrawInLoop = true;
         }
     }
 
     ChangeDirection(directionTo: Direction, ifNot: Direction): void {
         const direction = this.snake.head.direcao;
+        this.canDrawInLoop = true;
         if (direction !== ifNot)
             this.snake.head.nextDirecao = directionTo;
     }
