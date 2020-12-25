@@ -12,7 +12,7 @@ export class Fruit extends ElementView {
         x = x - (x % this.size);
         let y = Math.random() * maxY;
         y = y - (y % this.size);
-        this.moveTo(new Position(x, y));
+        this.goTo(new Position(x, y));
     }
 
 }

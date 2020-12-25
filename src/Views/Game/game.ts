@@ -13,7 +13,6 @@ export class Game extends View {
     canDrawInLoop = false;
     snake: Snake;
     fruit: Fruit;
-    step = 50;
 
     init() {
         const html = require('./game.html');
@@ -22,20 +21,20 @@ export class Game extends View {
         this.context = this.canvas.getContext('2d');
         this.Resize();
         this.initSnake()
-        this.fruit = new Fruit(new Position(200, 200), 50)
+        this.fruit = new Fruit(new Position(200, 200), this.blockSize)
         this.DrawInLoop();
         this.Draw();
         this.Events();
 
     }
     initSnake() {
-        this.snake = new Snake(new Position(0, 0));
+        this.snake = new Snake(new Position(0, 0), this.blockSize);
         this.snake.head.OnTouchMargin = this.GameOver;
     }
     Draw() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.touch();
-        if (this.snake.head.next(this.canvas)) {
+        if (this.snake.head.nextMovement(this.canvas)) {
             this.snake.head.drawHead(this.canvas, this.context);
         } else {
             this.GameOver()
@@ -45,7 +44,7 @@ export class Game extends View {
 
     DrawInLoop() {
         if (this.canDrawInLoop) { this.Draw(); }
-        setTimeout(() => { this.DrawInLoop() }, 100);
+        setTimeout(() => { this.DrawInLoop() }, 1);
     }
     Resize() {
         document.getElementsByTagName('body')[0].setAttribute('style', `max-height: ${window.innerHeight}px`);
@@ -97,10 +96,10 @@ export class Game extends View {
     }
 
     ChangeDirection(directionTo: Direction, ifNot: Direction): void {
-        const direction = this.snake.head.direcao;
+        const direction = this.snake.head.direction;
         this.canDrawInLoop = true;
         if (direction !== ifNot)
-            this.snake.head.nextDirecao = directionTo;
+            this.snake.head.nextDirection = directionTo;
     }
     ArrowLeft = () => this.ChangeDirection(Direction.Left, Direction.Right)
     ArrowRight = () => this.ChangeDirection(Direction.Right, Direction.Left)

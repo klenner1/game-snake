@@ -2,48 +2,41 @@ import { BodyPart } from './BodyPart';
 import { Direction } from '../Enums/Direction';
 
 export class Head extends BodyPart {
-    direcao: Direction;
-    nextDirecao: Direction;
+
     OnTouchMargin: () => void;
     OnTouchBody: () => void;
     Left() {
         if (this.position.x > 0) {
-            this.position.x = this.position.x - this.size
+            this.position.x--
         }
         else {
             this.OnTouchMargin();
         };
-        this.direcao = Direction.Left;
     }
     Right(maxX: number) {
         if (this.position.x < maxX - this.size) {
-            this.position.x = this.position.x + this.size;
+            this.position.x++;
         } else {
             this.OnTouchMargin();
         }
-        this.direcao = Direction.Right;
     }
     Up() {
         if (this.position.y > 0) {
-            this.position.y = this.position.y - this.size;
+            this.position.y--;
         } else {
             this.OnTouchMargin();
         }
-        this.direcao = Direction.Up;
     }
     Down(maxY: number) {
         if (this.position.y < maxY - this.size) {
-            this.position.y = this.position.y + this.size;
+            this.position.y++;
         } else {
             this.OnTouchMargin();
         }
-        this.direcao = Direction.Down;
     }
 
-    next(canvas: HTMLCanvasElement): boolean {
-        this.rear?.moveTo(Object.assign(this.position));
-        const direcion = this.nextDirecao != null ? this.nextDirecao : this.direcao;
-        switch (direcion) {
+    nextMovement(canvas: HTMLCanvasElement): boolean {
+        switch (this.direction) {
             case Direction.Left:
                 this.Left();
                 break;
@@ -57,7 +50,13 @@ export class Head extends BodyPart {
                 this.Down(canvas.height);
                 break;
         }
-        this.nextDirecao = null;
+        if (this.position.x % this.size === 0 && this.position.y % this.size === 0 && this.nextDirection) {
+            if (this.rear) {
+                this.rear.nextDirection = this.direction;
+            }
+            this.direction = this.nextDirection;
+        }
+        this.rear?.next()
         if (this.touchBody()) {
             this.OnTouchBody?.();
             return false;
@@ -70,6 +69,6 @@ export class Head extends BodyPart {
         this.toView(context);
     }
     touchBody(): boolean {
-        return this.touch(this.rear?.position) || this.rear?.touchHead(this.position);
+        return (this.touch(this.rear?.position) && this.direction !== Direction.stop) || this.rear?.touchHead(this.position);
     }
 }
