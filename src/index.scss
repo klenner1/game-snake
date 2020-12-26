@@ -37,3 +37,13 @@ header {
 #game {
     background-color: #34495e;
 }
+
+.score {
+    position: absolute;
+    bottom: 0px;
+    color: white;
+
+    p {
+        font-size: 1.5em;
+    }
+}

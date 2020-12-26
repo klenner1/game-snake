@@ -14,11 +14,15 @@ export class Game extends View {
     snake: Snake;
     fruit: Fruit;
 
+    Score = 0;
+    scoreElement: HTMLParagraphElement;
+
     init() {
         const html = require('./game.html');
         this.render(html);
         this.canvas = document.getElementById('game') as HTMLCanvasElement;
         this.context = this.canvas.getContext('2d');
+        this.scoreElement = document.getElementById('score') as HTMLParagraphElement;
         this.Resize();
         this.initSnake()
         this.fruit = new Fruit(new Position(200, 200), this.blockSize)
@@ -110,12 +114,20 @@ export class Game extends View {
         if (this.snake.head.position.equals(this.fruit.position)) {
             this.fruit.move(this.canvas.width, this.canvas.height);
             this.snake.head.addRear();
+            this.Score++;
+            this.updateScore()
         }
+    }
+
+    updateScore(){
+        this.scoreElement.textContent = `${this.Score}XP`;
     }
 
     GameOver = () => {
         this.canDrawInLoop = false;
         this.initSnake()
         this.Draw();
+        this.Score = 0;
+        this.updateScore()
     }
 }
