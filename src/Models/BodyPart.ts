@@ -23,9 +23,15 @@ export class BodyPart extends ElementView {
             this.rear = new BodyPart(ObjectUtils.clone(this.position), this.size, Direction.stop, this.index + 1);
         }
     }
-    next() {
-        this.moveTo(this.direction)
-        this.countChangeDirection--;
+    next(stepSize: number, rearNext: boolean): void {
+        const diference = (this.size % stepSize)
+        if (diference >= this.countChangeDirection) {
+            stepSize = diference
+        }
+        this.moveTo(this.direction, stepSize)
+        if (!(this.constructor.name === 'Head' && this.direction === Direction.stop)) {
+            this.countChangeDirection -= stepSize;
+        }
         if (this.countChangeDirection === 0) {
             if (this.rear) {
                 this.rear.nextDirection = this.direction;
@@ -33,11 +39,13 @@ export class BodyPart extends ElementView {
             this.direction = this.nextDirection;
             this.countChangeDirection = this.size;
         }
-        this.rear?.next()
+        if (rearNext) {
+            this.rear?.next(stepSize, true)
+        }
     }
-    moveTo(direction: Direction) {
+    moveTo(direction: Direction, stepSize: number) {
         if (this.direction !== Direction.stop) {
-            super.moveTo(direction);
+            super.moveTo(direction, stepSize);
         }
     }
     draw(context: CanvasRenderingContext2D) {

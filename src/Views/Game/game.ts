@@ -14,7 +14,9 @@ export class Game extends View {
     snake: Snake;
     fruit: Fruit;
 
+    StepSize = 2;
     Score = 0;
+    Delay = 10;
     scoreElement: HTMLParagraphElement;
 
     init() {
@@ -38,7 +40,8 @@ export class Game extends View {
     Draw() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.touch();
-        if (this.snake.head.nextMovement(this.canvas)) {
+
+        if (this.snake.head.nextMovement(this.canvas, this.StepSize)) {
             this.snake.head.drawHead(this.canvas, this.context);
         } else {
             this.GameOver()
@@ -48,7 +51,7 @@ export class Game extends View {
 
     DrawInLoop() {
         if (this.canDrawInLoop) { this.Draw(); }
-        setTimeout(() => { this.DrawInLoop() }, 1);
+        setTimeout(() => { this.DrawInLoop() }, this.Delay);
     }
     Resize() {
         document.getElementsByTagName('body')[0].setAttribute('style', `max-height: ${window.innerHeight}px`);
@@ -119,7 +122,10 @@ export class Game extends View {
         }
     }
 
-    updateScore(){
+    updateScore() {
+        const score = this.Score / 4;
+        this.Delay = Math.ceil(score - (Math.ceil((score + 1) / 10) * 10)) * -1;
+        this.StepSize = this.Delay <= 5 ? 1 : 2;
         this.scoreElement.textContent = `${this.Score}XP`;
     }
 
