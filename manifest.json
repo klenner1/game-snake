@@ -5,6 +5,7 @@
   "background_color": "#34495e",
   "display": "standalone",
   "start_url": "/",
+  "purpose": "any maskable",
   "icons": [
     {
       "src": "assets/icon/icon-72x72.png",
