@@ -3,12 +3,15 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const loader = require("sass-loader");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const WorkboxPlugin = require("workbox-webpack-plugin");
+const fs = require('fs');
 
 module.exports = {
-  entry: "./src/main.ts",
+  entry: {
+    main: "./src/main.ts",
+    sw: "./src/service-worker.js",
+  },
   output: {
-    filename: "bundle.js",
+    filename: "[name].js",
     path: path.resolve(__dirname, "dist"),
   },
   module: {
@@ -58,12 +61,14 @@ module.exports = {
         { from: "src/favicon.ico" },
       ],
     }),
-    new WorkboxPlugin.GenerateSW({
-      clientsClaim: true,
-      skipWaiting: true,
-    }),
   ],
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
   },
+  devServer: {
+    https: true,
+    key: fs.readFileSync('./path/server.key'),
+    cert: fs.readFileSync('./path/server.crt'),
+    //ca: fs.readFileSync('./path/ca.pem'),
+  }
 };
