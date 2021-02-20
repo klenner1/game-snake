@@ -2,29 +2,30 @@ import { Position } from './Position';
 import { ObjectUtils } from '../Utils/ObjectUtils';
 import { ElementView } from './ElementView';
 import { Direction } from '../Enums/Direction';
+import { Square } from './shapes/Square';
 
-export class BodyPart extends ElementView {
+export class BodyPart {
     rear: BodyPart;
     direction: Direction;
     nextDirection: Direction;
     index: number;
     countChangeDirection: number;
-
+    view: ElementView;
     constructor(position: Position, size: number, direction: Direction, index: number) {
-        super(position, size)
+        this.view = new Square(position, size, '#0F0FFF');
         this.direction = direction;
         this.index = index;
-        this.countChangeDirection = this.size;
+        this.countChangeDirection = size;
     }
     addRear() {
         if (this.rear) {
             this.rear.addRear();
         } else {
-            this.rear = new BodyPart(ObjectUtils.clone(this.position), this.size, Direction.stop, this.index + 1);
+            this.rear = new BodyPart(ObjectUtils.clone(this.view.position), this.view.size, Direction.stop, this.index + 1);
         }
     }
     next(stepSize: number, rearNext: boolean): void {
-        const diference = (this.size % stepSize)
+        const diference = (this.view.size % stepSize)
         if (diference >= this.countChangeDirection) {
             stepSize = diference
         }
@@ -37,7 +38,7 @@ export class BodyPart extends ElementView {
                 this.rear.nextDirection = this.direction;
             }
             this.direction = this.nextDirection;
-            this.countChangeDirection = this.size;
+            this.countChangeDirection = this.view.size;
         }
         if (rearNext) {
             this.rear?.next(stepSize, true)
@@ -45,16 +46,16 @@ export class BodyPart extends ElementView {
     }
     moveTo(direction: Direction, stepSize: number) {
         if (this.direction !== Direction.stop) {
-            super.moveTo(direction, stepSize);
+            this.view.moveTo(direction, stepSize);
         }
     }
     draw(context: CanvasRenderingContext2D) {
         context.fillStyle = '#0F0FFF';
-        this.toView(context);
+        this.view.ToView(context);
         this.rear?.draw(context);
     }
     touchHead(headPosition: Position): boolean {
-        return this.touch(headPosition) || this.rear?.touchHead(headPosition);
+        return this.index > 4 && this.view.touch(headPosition) || this.rear?.touchHead(headPosition);
     }
 
 }

@@ -2,10 +2,11 @@ import { Position } from './Position';
 import { Direction } from '../Enums/Direction';
 import { ObjectUtils } from '../Utils/ObjectUtils';
 
-export class ElementView {
+export abstract class ElementView {
     position: Position;
     movingTo: Direction;
     size: number;
+    index: number;
     constructor(position: Position, size: number) {
         this.position = position;
         this.size = size;
@@ -30,10 +31,6 @@ export class ElementView {
     goTo(position: Position) {
         this.position = ObjectUtils.clone(position)
     }
-    touch(position: Position): boolean {
-        return this.position.equals(position);
-    }
-    protected toView(context: CanvasRenderingContext2D) {
-        context.fillRect(this.position.x, this.position.y, this.size, this.size);
-    }
+    abstract touch(position: Position): boolean
+    abstract ToView(context: CanvasRenderingContext2D): void
 }

@@ -11,6 +11,7 @@ export class Game extends View {
     context: CanvasRenderingContext2D;
 
     canDrawInLoop = false;
+    moving = false;
     snake: Snake;
     fruit: Fruit;
 
@@ -29,6 +30,7 @@ export class Game extends View {
         this.initSnake()
         this.fruit = new Fruit(new Position(200, 200), this.blockSize)
         this.DrawInLoop();
+        this.MovimentLoop()
         this.Draw();
         this.Events();
 
@@ -37,21 +39,27 @@ export class Game extends View {
         this.snake = new Snake(new Position(0, 0), this.blockSize);
         this.snake.head.OnTouchMargin = this.GameOver;
     }
-    Draw() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    Moviment() {
         this.touch();
-
         if (this.snake.head.nextMovement(this.canvas, this.StepSize)) {
             this.snake.head.drawHead(this.canvas, this.context);
         } else {
             this.GameOver()
         }
+    }
+    MovimentLoop() {
+        if (this.moving) { this.Moviment(); }
+        setTimeout(() => { this.MovimentLoop() }, this.Delay);
+    }
+    Draw() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.snake.head.drawHead(this.canvas, this.context);
         this.fruit.draw(this.context);
     }
 
     DrawInLoop() {
         if (this.canDrawInLoop) { this.Draw(); }
-        setTimeout(() => { this.DrawInLoop() }, this.Delay);
+        setTimeout(() => { this.DrawInLoop() }, 1);
     }
     Resize() {
         document.getElementsByTagName('body')[0].setAttribute('style', `max-height: ${window.innerHeight}px`);
@@ -105,6 +113,7 @@ export class Game extends View {
     ChangeDirection(directionTo: Direction, ifNot: Direction): void {
         const direction = this.snake.head.direction;
         this.canDrawInLoop = true;
+        this.moving = true;
         if (direction !== ifNot)
             this.snake.head.nextDirection = directionTo;
     }
@@ -114,7 +123,7 @@ export class Game extends View {
     ArrowDown = () => this.ChangeDirection(Direction.Down, Direction.Up)
 
     touch() {
-        if (this.snake.head.position.equals(this.fruit.position)) {
+        if (this.fruit.view.touch(this.snake.head.view.position)) {
             this.fruit.move(this.canvas.width, this.canvas.height);
             this.snake.head.addRear();
             this.Score++;
@@ -131,6 +140,7 @@ export class Game extends View {
 
     GameOver = () => {
         this.canDrawInLoop = false;
+        this.moving = false;
         this.initSnake()
         this.Draw();
         this.Score = 0;

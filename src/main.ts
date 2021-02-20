@@ -18,4 +18,4 @@ const base = document.getElementById('base');
 const game = new Game(base);
 game.init();
 
-registerServiceWorker();
+//registerServiceWorker();
