@@ -1,12 +1,14 @@
-import { Head } from "./Head";
-import { Position } from "./Position";
+import { Head } from './Head';
+import { Position } from './Position';
+import { Direction } from '../Enums/Direction';
 
 export class Snake {
     head: Head;
-    size = 50;
-    
-    constructor(position: Position) {
-        this.head = new Head(position, this.size);
+    size: number;
+
+    constructor(position: Position, size: number) {
+        this.size = size;
+        this.head = new Head(position, this.size, Direction.stop, 0);
     }
 }
 

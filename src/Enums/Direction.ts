@@ -1,3 +1,3 @@
 export enum Direction {
-    Up, Down, Left, Right
+    stop, Up, Down, Left, Right
 }
