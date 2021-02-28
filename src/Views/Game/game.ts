@@ -42,7 +42,7 @@ export class Game extends View {
     Moviment() {
         this.touch();
         if (this.snake.head.nextMovement(this.canvas, this.StepSize)) {
-            this.snake.head.drawHead(this.canvas, this.context);
+            this.snake.head.draw(this.context);
         } else {
             this.GameOver()
         }
@@ -53,7 +53,7 @@ export class Game extends View {
     }
     Draw() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.snake.head.drawHead(this.canvas, this.context);
+        this.snake.head.draw(this.context);
         this.fruit.draw(this.context);
     }
 
@@ -123,7 +123,8 @@ export class Game extends View {
     ArrowDown = () => this.ChangeDirection(Direction.Down, Direction.Up)
 
     touch() {
-        if (this.fruit.view.touch(this.snake.head.view.position)) {
+        const position = this.snake.head.getnextPosition(this.StepSize)
+        if (this.fruit.view.touch(position)) {
             this.fruit.move(this.canvas.width, this.canvas.height);
             this.snake.head.addRear();
             this.Score++;

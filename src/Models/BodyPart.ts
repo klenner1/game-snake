@@ -1,5 +1,4 @@
 import { Position } from './Position';
-import { ObjectUtils } from '../Utils/ObjectUtils';
 import { ElementView } from './ElementView';
 import { Direction } from '../Enums/Direction';
 import { Square } from './shapes/Square';
@@ -11,17 +10,21 @@ export class BodyPart {
     index: number;
     countChangeDirection: number;
     view: ElementView;
-    constructor(position: Position, size: number, direction: Direction, index: number) {
-        this.view = new Square(position, size, '#0F0FFF');
+    constructor(view: ElementView, direction: Direction, index: number) {
+        this.view = view;
         this.direction = direction;
         this.index = index;
-        this.countChangeDirection = size;
+        this.countChangeDirection = view.size;
     }
     addRear() {
         if (this.rear) {
             this.rear.addRear();
         } else {
-            this.rear = new BodyPart(ObjectUtils.clone(this.view.position), this.view.size, Direction.stop, this.index + 1);
+            const x = this.view.position.x - (this.view.position.x % this.view.size);
+            const y = this.view.position.y - (this.view.position.y % this.view.size);
+            const position = new Position(x, y);
+            const view = new Square(position, this.view.size, (this.view as Square).color);
+            this.rear = new BodyPart(view, Direction.stop, this.index + 1);
         }
     }
     next(stepSize: number, rearNext: boolean): void {
@@ -50,7 +53,6 @@ export class BodyPart {
         }
     }
     draw(context: CanvasRenderingContext2D) {
-        context.fillStyle = '#0F0FFF';
         this.view.ToView(context);
         this.rear?.draw(context);
     }

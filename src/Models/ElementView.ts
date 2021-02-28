@@ -13,20 +13,7 @@ export abstract class ElementView {
     }
     moveTo(direction: Direction, stepSize: number) {
         this.movingTo = direction;
-        switch (direction) {
-            case Direction.Up:
-                this.position.y -= stepSize
-                break;
-            case Direction.Down:
-                this.position.y += stepSize
-                break;
-            case Direction.Left:
-                this.position.x -= stepSize
-                break;
-            case Direction.Right:
-                this.position.x += stepSize
-                break;
-        }
+        this.position.move(direction, stepSize);
     }
     goTo(position: Position) {
         this.position = ObjectUtils.clone(position)

@@ -1,8 +1,15 @@
 import { BodyPart } from './BodyPart';
 import { Direction } from '../Enums/Direction';
-import { Position } from './Position';
+import { ElementView } from './ElementView';
+import { ObjectUtils } from '../Utils/ObjectUtils';
 
 export class Head extends BodyPart {
+
+    colorHear: string
+    constructor(view: ElementView, direction: Direction, index: number, colorHear: string) {
+        super(view, direction, index);
+        this.colorHear = colorHear;
+    }
 
     OnTouchMargin: () => void;
     OnTouchBody: () => void;
@@ -19,9 +26,6 @@ export class Head extends BodyPart {
     nextMovement(canvas: HTMLCanvasElement, stepSize: number): boolean {
         this.isInCanvas(canvas)
         if (this.view.position.x % this.view.size === 0 && this.view.position.y % this.view.size === 0 && this.nextDirection) {
-            if (this.rear) {
-                this.rear.nextDirection = this.direction;
-            }
             this.direction = this.nextDirection;
         }
         this.next(stepSize, false)
@@ -32,10 +36,11 @@ export class Head extends BodyPart {
         }
         return true;
     }
-    drawHead(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, move = true) {
-        this.rear?.draw(context);
-        context.fillStyle = '#FF0000';
-        this.view.ToView(context);
+
+    getnextPosition(stepSize: number) {
+        const position = ObjectUtils.clone(this.view.position);
+        position.move(this.direction, stepSize)
+        return position;
     }
     touchBody(): boolean {
         return this.rear?.touchHead(this.view.position);
