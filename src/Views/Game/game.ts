@@ -3,6 +3,8 @@ import { Snake } from '../../Models/Snake';
 import { Fruit } from '../../Models/Fruit';
 import { Position } from '../../Models/Position';
 import { Direction } from '../../Enums/Direction';
+import { ColorFill } from '../../Models/fills/ColorFill';
+import { Theme } from '../../Models/Theme';
 export class Game extends View {
 
     touchstartPosition = new Position(0, 0)
@@ -19,8 +21,9 @@ export class Game extends View {
     Score = 0;
     Delay = 10;
     scoreElement: HTMLParagraphElement;
-
+    theme: Theme
     init() {
+        this.theme = new Theme(new ColorFill('#FF0000', '#00FF00', '#FFF000'));
         const html = require('./game.html');
         this.render(html);
         this.canvas = document.getElementById('game') as HTMLCanvasElement;
@@ -28,7 +31,7 @@ export class Game extends View {
         this.scoreElement = document.getElementById('score') as HTMLParagraphElement;
         this.Resize();
         this.initSnake()
-        this.fruit = new Fruit(new Position(200, 200), this.blockSize)
+        this.fruit = new Fruit(new Position(200, 200), this.blockSize, this.theme)
         this.DrawInLoop();
         this.MovimentLoop()
         this.Draw();
@@ -36,7 +39,7 @@ export class Game extends View {
 
     }
     initSnake() {
-        this.snake = new Snake(new Position(0, 0), this.blockSize);
+        this.snake = new Snake(new Position(0, 0), this.blockSize, this.theme);
         this.snake.head.OnTouchMargin = this.GameOver;
     }
     Moviment() {

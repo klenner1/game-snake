@@ -23,7 +23,7 @@ export class BodyPart {
             const x = this.view.position.x - (this.view.position.x % this.view.size);
             const y = this.view.position.y - (this.view.position.y % this.view.size);
             const position = new Position(x, y);
-            const view = new Square(position, this.view.size, (this.view as Square).color);
+            const view = new Square(position, this.view.size, this.view.theme);
             this.rear = new BodyPart(view, Direction.stop, this.index + 1);
         }
     }
@@ -53,8 +53,9 @@ export class BodyPart {
         }
     }
     draw(context: CanvasRenderingContext2D) {
-        this.view.ToView(context);
+        const name = this.constructor.name
         this.rear?.draw(context);
+        this.view.ToView(context,name);
     }
     touchHead(headPosition: Position): boolean {
         return this.index > 4 && this.view.touch(headPosition) || this.rear?.touchHead(headPosition);

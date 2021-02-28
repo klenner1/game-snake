@@ -5,12 +5,6 @@ import { ObjectUtils } from '../Utils/ObjectUtils';
 
 export class Head extends BodyPart {
 
-    colorHear: string
-    constructor(view: ElementView, direction: Direction, index: number, colorHear: string) {
-        super(view, direction, index);
-        this.colorHear = colorHear;
-    }
-
     OnTouchMargin: () => void;
     OnTouchBody: () => void;
     isInCanvas(canvas: HTMLCanvasElement) {
