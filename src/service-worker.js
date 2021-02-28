@@ -1,4 +1,4 @@
-const cacheName = "v1.0";
+const cacheName = "v1.0.1";
 const path = self.location.pathname.replace('sw.js','')
 const cacheFiles = [
   path,
